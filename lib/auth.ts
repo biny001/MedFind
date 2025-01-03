@@ -30,6 +30,7 @@ export const auth = betterAuth({
         user: {
           ...user,
           approved: pharmacy?.approvalStatus,
+          pharmacyId: pharmacy?.id,
         },
         session,
       };

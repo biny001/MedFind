@@ -48,6 +48,7 @@ export function PharmacyRegistrationForm({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -59,9 +60,34 @@ export function PharmacyRegistrationForm({
     resolver: zodResolver(pharmacySchema),
   });
 
-  const onSubmit = (data: PharmacyFormData) => {
+  const onSubmit = async (data: PharmacyFormData) => {
     console.log("Form submitted:", data);
+
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("email", data.email);
+    formData.append("phoneNumber", data.phone);
+    formData.append("location", data.location);
     // Here you would typically send the data to your backend
+
+    data.images.forEach((image) => {
+      formData.append(`images`, image);
+    });
+
+    try {
+      setLoading(true);
+      const res = await fetch("/api/pharmacy", {
+        method: "POST",
+        body: formData,
+      });
+      if (!res.ok) {
+        throw new Error("Failed to register pharmacy");
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -187,7 +213,12 @@ export function PharmacyRegistrationForm({
               </div>
             </div>
 
-            <Button type="submit" className="w-full">
+            <Button
+              type="submit"
+              disabled={loading}
+              onSubmit={() => onSubmit}
+              className="w-full"
+            >
               Register Pharmacy
             </Button>
           </form>

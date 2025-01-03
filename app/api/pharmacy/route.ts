@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/auth";
+import cloudinary from "@/lib/config";
 import getSession from "@/lib/getuserSession";
 
 export interface SessionData {
@@ -25,27 +26,50 @@ export interface SessionData {
   };
 }
 
+// const typedSession: SessionData = userSession as SessionData;
+// const userSession = await getSession();
+
+// if (!userSession) {
+//   return new Response("Unauthorized", { status: 401 });
+// }
+
 export const POST = async function (request: Request) {
   try {
-    const userSession = await getSession();
+    // const userSession = await getSession();
 
-    if (!userSession) {
-      return new Response("Unauthorized", { status: 401 });
+    // if (!userSession) {
+    //   return new Response("Unauthorized", { status: 401 });
+    // }
+
+    const formData = await request.formData();
+
+    const name = formData.get("name") as string;
+    const email = formData.get("email") as string;
+    const phone = formData.get("phoneNumber") as string;
+    const location = formData.get("location") as string;
+    const images = formData.getAll("images") as File[];
+    let uploadedImage = [""];
+
+    console.log({ name, email, phone, location, images });
+
+    if (images.length > 0) {
+      const imageUploadPromises = images.map(async (image) => {
+        const imageBuffer = await image.arrayBuffer();
+        const imageArray = Array.from(new Uint8Array(imageBuffer));
+        const imageData = Buffer.from(imageArray);
+        const imageBase64 = imageData.toString("base64");
+
+        // upload to cloudinary
+
+        const result = await cloudinary.uploader.upload(
+          `data:image/png;base64,${imageBase64}`,
+          { folder: "pharmacy" }
+        );
+
+        return result.secure_url;
+      });
+      uploadedImage = await Promise.all(imageUploadPromises);
     }
-
-    // Type assertion to SessionData, since `getSession` guarantees `userSession` is not null here
-    const typedSession: SessionData = userSession as SessionData;
-
-    // const pharmacy = await prisma.pharmacy.create({
-    //   data: {
-    //     name: "HealthFirst Pharmacy",
-    //     location: "123 Main Street, Springfield",
-    //     contactInfo: "+1-555-123-4567",
-    //     adminId: typedSession.user.id, // Reference to the primary admin's User ID
-    //     admins: [typedSession.user.id], // Add the primary admin to the array
-    //     approvalStatus: "PENDING",
-    //   },
-    // });
 
     return new Response("Pharmacy created successfully", { status: 200 });
   } catch (error) {
