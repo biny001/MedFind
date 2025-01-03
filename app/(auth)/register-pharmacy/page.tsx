@@ -12,8 +12,8 @@ const page = () => {
   if (isPending) return <div>Loading...</div>;
   if (error) return <div>{error.message}</div>;
   if (!session) redirect("/login");
-  // if (session?.user?.pharmacyId) redirect("/");
-  // console.log(session);
+  if (session?.user?.pharmacyId) redirect("/");
+  console.log(session);
 
   return (
     <main

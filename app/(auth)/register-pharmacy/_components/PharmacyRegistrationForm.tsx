@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import { X } from "lucide-react";
 import { ImagePreview } from "./ImagePreviewer";
 import { MapDialog } from "./MapDialog";
+import { useRouter } from "next/navigation";
 
 const MAX_FILE_SIZE = 5000000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -39,6 +40,28 @@ const pharmacySchema = z.object({
     )
     .min(1, "At least one image is required")
     .max(5, "Maximum 5 images allowed"),
+  pharmacyLicense: z
+    .instanceof(File)
+    .optional()
+    .refine(
+      (file) => !file || file.size <= MAX_FILE_SIZE,
+      `Max file size is 5MB.`
+    )
+    .refine(
+      (file) => !file || ACCEPTED_IMAGE_TYPES.includes(file.type),
+      ".jpg, .jpeg, .png and .webp files are accepted."
+    ),
+  governmentId: z
+    .instanceof(File)
+    .optional()
+    .refine(
+      (file) => !file || file.size <= MAX_FILE_SIZE,
+      `Max file size is 5MB.`
+    )
+    .refine(
+      (file) => !file || ACCEPTED_IMAGE_TYPES.includes(file.type),
+      ".jpg, .jpeg, .png and .webp files are accepted."
+    ),
 });
 
 type PharmacyFormData = z.infer<typeof pharmacySchema>;
@@ -49,6 +72,14 @@ export function PharmacyRegistrationForm({
 }: React.HTMLAttributes<HTMLDivElement>) {
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [pharmacyLicensePreview, setPharmacyLicensePreview] = useState<
+    string | null
+  >(null);
+  const [governmentIdPreview, setGovernmentIdPreview] = useState<string | null>(
+    null
+  );
+
+  const router = useRouter();
 
   const {
     register,
@@ -73,6 +104,13 @@ export function PharmacyRegistrationForm({
     data.images.forEach((image) => {
       formData.append(`images`, image);
     });
+    if (data.pharmacyLicense) {
+      formData.append("pharmacyLicense", data.pharmacyLicense);
+    }
+
+    if (data.governmentId) {
+      formData.append("governmentId", data.governmentId);
+    }
 
     try {
       setLoading(true);
@@ -82,6 +120,9 @@ export function PharmacyRegistrationForm({
       });
       if (!res.ok) {
         throw new Error("Failed to register pharmacy");
+      }
+      if (res.ok) {
+        router.push("/");
       }
     } catch (e) {
       console.log(e);
@@ -96,6 +137,24 @@ export function PharmacyRegistrationForm({
 
     const newPreviews = files.map((file) => URL.createObjectURL(file));
     setImagePreviews(newPreviews);
+  };
+
+  const handlePharmacyLicenseChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setValue("pharmacyLicense", file);
+      setPharmacyLicensePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleGovernmentIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setValue("governmentId", file);
+      setGovernmentIdPreview(URL.createObjectURL(file));
+    }
   };
 
   const removeImage = (index: number) => {
@@ -208,6 +267,88 @@ export function PharmacyRegistrationForm({
                 {errors.images && (
                   <p className="text-sm text-red-500 mt-1">
                     {errors.images.message}
+                  </p>
+                )}
+              </div>
+
+              {/*  */}
+
+              <div className="space-y-2">
+                <Label htmlFor="pharmacyLicense">Pharmacy License</Label>
+                <div className="flex items-center gap-4">
+                  <label className="w-24 h-24 flex items-center justify-center border-2 border-dashed border-gray-300 rounded cursor-pointer hover:border-gray-400 transition-colors">
+                    <span className="text-2xl text-gray-400">+</span>
+                    <input
+                      type="file"
+                      id="pharmacyLicense"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handlePharmacyLicenseChange}
+                    />
+                  </label>
+                  {pharmacyLicensePreview && (
+                    <div className="relative">
+                      <ImagePreview
+                        src={pharmacyLicensePreview}
+                        alt="Pharmacy License"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setValue("pharmacyLicense", undefined);
+                          setPharmacyLicensePreview(null);
+                        }}
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+                {errors.pharmacyLicense && (
+                  <p className="text-sm text-red-500 mt-1">
+                    {errors.pharmacyLicense.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="governmentId">
+                  Government Issued Identification
+                </Label>
+                <div className="flex items-center gap-4">
+                  <label className="w-24 h-24 flex items-center justify-center border-2 border-dashed border-gray-300 rounded cursor-pointer hover:border-gray-400 transition-colors">
+                    <span className="text-2xl text-gray-400">+</span>
+                    <input
+                      type="file"
+                      id="governmentId"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleGovernmentIdChange}
+                    />
+                  </label>
+                  {governmentIdPreview && (
+                    <div className="relative">
+                      <ImagePreview
+                        src={governmentIdPreview}
+                        alt="Government ID"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setValue("governmentId", undefined);
+                          setGovernmentIdPreview(null);
+                        }}
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+                {errors.governmentId && (
+                  <p className="text-sm text-red-500 mt-1">
+                    {errors.governmentId.message}
                   </p>
                 )}
               </div>

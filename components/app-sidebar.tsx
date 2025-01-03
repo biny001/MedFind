@@ -1,3 +1,5 @@
+"use client";
+import { authClient } from "@/lib/auth-client";
 import {
   Sidebar,
   SidebarContent,
@@ -11,6 +13,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Folder, Folders, Home, ShoppingBag } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 import Link from "next/link";
 import { Button } from "./ui/button";
@@ -39,6 +42,7 @@ const records = [
 ];
 
 export function AppSidebar() {
+  const router = useRouter();
   return (
     <Sidebar>
       <SidebarHeader>
@@ -70,7 +74,17 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <Button>LOG OUT</Button>
+        <Button
+          onClick={async () =>
+            await authClient.signOut({
+              fetchOptions: {
+                onSuccess: () => router.push("/login"),
+              },
+            })
+          }
+        >
+          LOG OUT
+        </Button>
       </SidebarFooter>
     </Sidebar>
   );
