@@ -31,7 +31,7 @@ interface EmailOptions {
 const sendMail = async (emailOptions: EmailOptions) => {
   try {
     await transporter.sendMail({
-      from: `"Stellar Wallet" <${process.env.EMAIL_USER}>`, // Sender address
+      from: `"MEDFIND" <${process.env.EMAIL_USER}>`, // Sender address
       to: emailOptions.to, // Recipient
       subject: emailOptions.subject, // Subject
       text: emailOptions.text, // Plain text body

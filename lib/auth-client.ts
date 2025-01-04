@@ -15,6 +15,9 @@ export const authClient = createAuthClient({
         phoneNumber: {
           type: "string",
         },
+        role: {
+          type: "string",
+        },
       },
     }),
   ],

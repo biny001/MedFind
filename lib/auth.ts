@@ -3,8 +3,6 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { PrismaClient } from "@prisma/client";
 import { customSession } from "better-auth/plugins";
 
-// import sendMail from "./nodeMailer";
-
 export const prisma = new PrismaClient();
 
 export const auth = betterAuth({
@@ -16,6 +14,12 @@ export const auth = betterAuth({
         defaultValue: "",
         input: true,
       },
+      role: {
+        type: "string",
+        required: true,
+        defaultValue: "USER",
+        input: false,
+      },
     },
   },
   plugins: [
@@ -26,11 +30,18 @@ export const auth = betterAuth({
         },
       });
 
+      const userdata = await prisma.user.findUnique({
+        where: {
+          id: user.id,
+        },
+      });
+
       return {
         user: {
           ...user,
           approved: pharmacy?.approvalStatus,
           pharmacyId: pharmacy?.id,
+          role: userdata?.role,
         },
         session,
       };

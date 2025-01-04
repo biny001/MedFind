@@ -15,8 +15,8 @@ import { ImagePreview } from "./ImagePreviewer";
 import { MapDialog } from "./MapDialog";
 import { useRouter } from "next/navigation";
 
-const MAX_FILE_SIZE = 5000000;
-const ACCEPTED_IMAGE_TYPES = [
+export const MAX_FILE_SIZE = 5000000;
+export const ACCEPTED_IMAGE_TYPES = [
   "image/jpeg",
   "image/jpg",
   "image/png",

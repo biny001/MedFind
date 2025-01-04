@@ -13,6 +13,7 @@ const page = () => {
   if (error) return <div>{error.message}</div>;
   if (!session) redirect("/login");
   if (session?.user?.pharmacyId) redirect("/");
+
   console.log(session);
 
   return (

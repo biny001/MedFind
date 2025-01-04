@@ -109,12 +109,21 @@ model Pharmacy {
 model Medicine {
   id          String   @id @default(cuid())
   name        String
+  category    String
   description String?
   price       Float
+  administrationRoute String
+  form        String
+  storage     String 
   quantity    Int
+  supplier    String
+  doseUnit        String
+  doseAmount  String
+  medicineImage String[]
   pharmacyId  String   // References the Pharmacy
   pharmacy    Pharmacy @relation(fields: [pharmacyId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  
 }
