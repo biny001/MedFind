@@ -1,12 +1,16 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { cn } from "@/lib/utils";
 import React from "react";
-import { medicines } from "./data/data";
+import { Medicine, medicines } from "./data/data";
 import { columns } from "./_components/column";
 import { DataTable } from "./_components/data-table";
-
 import { AddMedicineDetail } from "./_components/addMedicineDetail";
+import { withApprovalProtection } from "@/components/withApprovalProtection";
+import { useState } from "react";
+import MedicineTableData from "./_components/MedicineTableData";
 
-const Page = () => {
+const MedicinePage = async () => {
   return (
     <div className="mx-auto space-y-6 w-full overflow-auto">
       <div className="space-y-2 flex flex-row justify-between">
@@ -15,9 +19,9 @@ const Page = () => {
         </h1>
         <AddMedicineDetail />
       </div>
-      <DataTable columns={columns} data={medicines} />
+      <MedicineTableData />
     </div>
   );
 };
 
-export default Page;
+export default withApprovalProtection(MedicinePage);

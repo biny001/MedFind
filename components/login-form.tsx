@@ -43,6 +43,10 @@ export function LoginForm({
         password: values.password,
         callbackURL: "/",
       });
+
+      if (error) {
+        console.log(error.message);
+      }
     } catch (error) {
       console.error(error);
     } finally {

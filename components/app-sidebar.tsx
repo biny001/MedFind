@@ -26,17 +26,17 @@ const records = [
   },
   {
     title: "Medicine",
-    url: "/medicine",
+    url: "/dashboard/medicine-detail",
     icon: ShoppingBag,
   },
   {
     title: "Users",
-    url: "/users",
+    url: "/dashboard/user",
     icon: Folder,
   },
   {
     title: "Profile",
-    url: "/profile",
+    url: "/dashboard/profile",
     icon: Folders,
   },
 ];

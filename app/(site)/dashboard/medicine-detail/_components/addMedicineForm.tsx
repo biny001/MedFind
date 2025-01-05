@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
+"use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
+import React, { useState } from "react";
 import {
   Form,
   FormControl,
@@ -19,7 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { set, z } from "zod";
 import { therapeuticUses } from "../data/data";
 import { forms } from "../data/data";
 import { unit } from "../data/data";
@@ -36,6 +37,7 @@ const AddMedicineForm = ({
 }: {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const [loading, setLoading] = useState(false);
   const [imagePreview, setImagePreview] = React.useState<string | null>(null);
 
   const formSchema = z.object({
@@ -98,26 +100,40 @@ const AddMedicineForm = ({
     }
   };
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    const formData = new FormData();
-    formData.append("name", values.name);
-    formData.append("category", values.category);
-    formData.append("doseAmount", values.doseAmount.toString());
-    formData.append("doseUnit", values.doseUnit);
-    formData.append("form", values.form);
-    formData.append("route", values.route);
-    formData.append("storage", values.storage);
-    formData.append("supplier", values.supplier);
-    formData.append("description", values.description);
-    formData.append("price", values.price.toString());
-    formData.append("quantity", values.quantity.toString());
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      setLoading(true);
 
-    if (values.medicineImage) {
-      formData.append("medicineImage", values.medicineImage);
+      const formData = new FormData();
+      formData.append("name", values.name);
+      formData.append("category", values.category);
+      formData.append("doseAmount", values.doseAmount.toString());
+      formData.append("doseUnit", values.doseUnit);
+      formData.append("form", values.form);
+      formData.append("administrationRoute", values.route);
+      formData.append("storage", values.storage);
+      formData.append("supplier", values.supplier);
+      formData.append("description", values.description);
+      formData.append("price", values.price.toString());
+      formData.append("quantity", values.quantity.toString());
+
+      if (values.medicineImage) {
+        formData.append("medicineImage", values.medicineImage);
+      }
+
+      const res = await fetch("/api/medicine", {
+        method: "POST",
+        body: formData,
+      });
+      console.log(formData);
+      const data = await res.json();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
-    console.log(formData);
 
-    setIsOpen(false);
+    // setIsOpen(false);
   }
   return (
     <Form {...form}>
@@ -272,6 +288,19 @@ const AddMedicineForm = ({
                 <FormLabel>Supplier</FormLabel>
                 <FormControl>
                   <Input placeholder="e.g. Supplier company" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Description</FormLabel>
+                <FormControl>
+                  <Input placeholder="e.g. description" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

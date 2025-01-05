@@ -2,6 +2,7 @@
 import { prisma } from "@/lib/auth";
 import cloudinary from "@/lib/config";
 import getSession from "@/lib/getuserSession";
+import { NextResponse } from "next/server";
 
 export interface SessionData {
   session: {
@@ -34,13 +35,39 @@ export interface SessionData {
 //   return new Response("Unauthorized", { status: 401 });
 // }
 
+export const GET = async function (request: Request) {
+  try {
+    const userSession = await getSession();
+
+    if (!userSession) return new Response("unauthorized", { status: 401 });
+    const pharmacy = await prisma.pharmacy.findFirst({
+      where: {
+        OR: [
+          { adminId: userSession.user.id }, // Match by adminId
+          { admins: { has: userSession.user.id } }, // Match by presence in the admins array
+        ],
+      },
+    });
+
+    if (!pharmacy) {
+      throw new Error("unable to get pharmacy details");
+    }
+
+    return NextResponse.json(pharmacy, { status: 200 });
+  } catch (error) {
+    return new Response((error as Error).message, { status: 500 });
+  }
+};
+
 export const POST = async function (request: Request) {
   try {
     const userSession = await getSession();
 
+    console.log(userSession);
     if (!userSession) {
       return new Response("Unauthorized", { status: 401 });
     }
+
     const typedSession: SessionData = userSession as SessionData;
 
     const formData = await request.formData();
@@ -137,7 +164,7 @@ export const POST = async function (request: Request) {
         email: email,
         adminId: typedSession.user.id,
         approvalStatus: "PENDING",
-        admins: [typedSession.user.id], // List of additional admin IDs
+        admins: undefined, // List of additional admin IDs
         pharmacyImage: uploadedImage,
         pharmacyLicence: pharmacyLicenseImage,
         ownerLicence: ownerLicenseImage[0],

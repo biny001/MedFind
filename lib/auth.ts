@@ -26,7 +26,10 @@ export const auth = betterAuth({
     customSession(async ({ user, session }) => {
       const pharmacy = await prisma.pharmacy.findFirst({
         where: {
-          adminId: user.id,
+          OR: [
+            { adminId: user.id }, // Match by adminId
+            { admins: { has: user.id } }, // Match by presence in the admins array
+          ],
         },
       });
 

@@ -1,11 +1,21 @@
-export type Medicine = {
+export interface Medicine {
   id: string;
   name: string;
   category: string;
-  dosage: string;
+  description?: string;
   price: number;
-  stock: number;
-};
+  administrationRoute: string;
+  form: string;
+  storage: string;
+  quantity: number;
+  supplier: string;
+  doseUnit: string;
+  doseAmount: string;
+  medicineImage: string[];
+  pharmacyId: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
 // Based on Therapeutic Use
 export const therapeuticUses: string[] = [
   "Analgesic", // Pain relief
@@ -55,40 +65,37 @@ export const medicines: Medicine[] = [
     id: "1",
     name: "Aspirin",
     category: "Pain Relief",
-    dosage: "325mg",
+    description: "Used to reduce fever and relieve mild to moderate pain.",
     price: 5.99,
-    stock: 500,
+    administrationRoute: "Oral",
+    form: "Tablet",
+    storage: "Store at room temperature, away from moisture and heat.",
+    quantity: 500,
+    supplier: "HealthCorp Ltd.",
+    doseUnit: "mg",
+    doseAmount: "325",
+    medicineImage: ["https://example.com/images/aspirin.jpg"],
+    pharmacyId: "pharmacy1",
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
   {
     id: "2",
     name: "Amoxicillin",
     category: "Antibiotic",
-    dosage: "500mg",
+    description: "Treats bacterial infections.",
     price: 12.99,
-    stock: 200,
+    administrationRoute: "Oral",
+    form: "Capsule",
+    storage: "Store at room temperature in a tightly sealed container.",
+    quantity: 200,
+    supplier: "MediSupply Co.",
+    doseUnit: "mg",
+    doseAmount: "500",
+    medicineImage: ["https://example.com/images/amoxicillin.jpg"],
+    pharmacyId: "pharmacy1",
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
-  {
-    id: "3",
-    name: "Lisinopril",
-    category: "Blood Pressure",
-    dosage: "10mg",
-    price: 8.99,
-    stock: 300,
-  },
-  {
-    id: "4",
-    name: "Metformin",
-    category: "Diabetes",
-    dosage: "500mg",
-    price: 7.99,
-    stock: 400,
-  },
-  {
-    id: "5",
-    name: "Simvastatin",
-    category: "Cholesterol",
-    dosage: "20mg",
-    price: 9.99,
-    stock: 250,
-  },
+  // Add more sample data here...
 ];
