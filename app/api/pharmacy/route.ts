@@ -40,6 +40,7 @@ export const GET = async function (request: Request) {
     const userSession = await getSession();
 
     if (!userSession) return new Response("unauthorized", { status: 401 });
+
     const pharmacy = await prisma.pharmacy.findFirst({
       where: {
         OR: [
@@ -174,6 +175,67 @@ export const POST = async function (request: Request) {
     console.log(pharmacy);
 
     return new Response("Pharmacy created successfully", { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return new Response((error as Error).message, { status: 500 });
+  }
+};
+
+export const PUT = async function (request: Request) {
+  try {
+    const session = await getSession();
+    if (!session) {
+      return new Response("No user session found", { status: 401 });
+    }
+
+    if (!session.user.pharmacyId) {
+      throw new Error("You have no pharmacy to edit");
+    }
+
+    const pharmacy = await prisma.pharmacy.findUnique({
+      where: { id: session.user.pharmacyId },
+    });
+
+    if (!pharmacy) {
+      throw new Error("Specified pharmacy does not exist");
+    }
+
+    if (session.user.id !== pharmacy.adminId) {
+      return new Response("Unauthorized access to an unowned pharmacy", {
+        status: 401,
+      });
+    }
+
+    if (!session.user.approved) {
+      throw new Error(
+        "You cannot edit any information until your pharmacy is approved"
+      );
+    }
+
+    const formData = await request.formData();
+    const name = formData.get("name") as string | null;
+    const email = formData.get("email") as string | null;
+    const phoneNumber = formData.get("phoneNumber") as string | null;
+    const location = formData.get("location") as string | null;
+
+    // Update the pharmacy with incoming fields
+    const updatedPharmacy = await prisma.pharmacy.update({
+      where: { id: session.user.pharmacyId },
+      data: {
+        ...(name && { name }),
+        ...(email && { email }),
+        ...(phoneNumber && { phoneNumber }),
+        ...(location && { location }),
+      },
+    });
+
+    return new Response(
+      JSON.stringify({
+        message: "Pharmacy updated successfully",
+        updatedPharmacy,
+      }),
+      { status: 200 }
+    );
   } catch (error) {
     console.error(error);
     return new Response((error as Error).message, { status: 500 });

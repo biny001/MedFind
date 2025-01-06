@@ -165,6 +165,7 @@ export const useEditPharmacy = () => {
     onSuccess: () => {
       // Invalidate or refresh the medicines list
       queryClient.invalidateQueries({ queryKey: ["pharmacy"] });
+      toast.success("Pharmacy edited Successfully");
     },
     onError: (error: any) => {
       console.error("Error editing pharmacy:", error);
@@ -178,7 +179,7 @@ export const useRegisterPharmacy = () => {
     onSuccess: () => {
       // Invalidate or refresh the medicines list
 
-      toast.success("Medicine Created Successfully");
+      toast.success("Pharmacy Created Successfully");
     },
 
     onError: (error: any) => {
@@ -204,11 +205,11 @@ export async function createUser(data: FormData): Promise<void> {
 
 export async function deleteUser(id: string) {
   const response = await fetch(`/api/user/${id}`, {
-    method: "DELETE",
+    method: "PUT",
   });
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(errorData.message || "Failed to create user");
+    throw new Error(errorData.message || "Failed to delete user");
   }
 }
 
@@ -220,9 +221,10 @@ export const useDeleteUser = () => {
     onSuccess: () => {
       // Invalidate or update the cache to reflect the deletion
       queryClient.invalidateQueries({ queryKey: ["user"] }); // Replace "comments" with the query key for your medicines list
+      toast.success("User Deleted Successfully");
     },
     onError: (error: any) => {
-      console.error("Error deleting Pharamcy:", error);
+      console.error("Error deleting User:", error?.message);
     },
   });
 };

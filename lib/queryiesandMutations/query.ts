@@ -10,11 +10,43 @@ export async function getMedicine() {
   return await response.json(); // Ensure the data is parsed as JSON
 }
 
+export async function getUser() {
+  const response = await fetch("/api/user");
+  if (!response.ok) {
+    throw new Error("Failed to fetch user data");
+  }
+  return await response.json();
+}
+
 // queries
 
 export const useMedicine = () => {
   return useQuery<Medicine[]>({
     queryKey: ["medicine"],
     queryFn: getMedicine,
+  });
+};
+
+export const useUser = () => {
+  return useQuery({
+    queryKey: ["user"],
+    queryFn: getUser,
+  });
+};
+
+// pharmacy
+
+export async function getPharmacy() {
+  const response = await fetch("/api/pharmacy");
+  if (!response.ok) {
+    throw new Error("Failed to fetch pharmacy data");
+  }
+  return await response.json(); // Ensure the data is parsed as JSON
+}
+
+export const usePharmacy = () => {
+  return useQuery({
+    queryKey: ["pharmacy"],
+    queryFn: getPharmacy,
   });
 };

@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { generatePassword } from "./generatePassword";
+import { useCreateUser } from "@/lib/queryiesandMutations/mutations";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -33,9 +34,11 @@ const formSchema = z.object({
   password: z.string().min(8, {
     message: "Password must be at least 8 characters.",
   }),
+  phoneNumber: z.string().regex(/^9\d{8}$/, "Invalid phone number"),
 });
 
 export default function AddUserModal() {
+  const { mutate: createUser, isPending } = useCreateUser();
   const [isOpen, setIsOpen] = useState(false);
   const [generatedPassword, setGeneratedPassword] = useState("");
 
@@ -45,6 +48,7 @@ export default function AddUserModal() {
       name: "",
       email: "",
       password: "",
+      phoneNumber: "",
     },
   });
 
@@ -54,19 +58,13 @@ export default function AddUserModal() {
       formData.append("name", values.name);
       formData.append("email", values.email);
       formData.append("password", generatedPassword);
+      formData.append("phoneNumber", values.phoneNumber);
 
-      const response = await fetch("/api/user", {
-        method: "POST",
-        body: formData,
-      });
+      createUser(formData);
 
-      if (response.ok) {
+      setTimeout(() => {
         setIsOpen(false);
-        form.reset();
-        // You might want to refresh the user list here
-      } else {
-        console.error("Failed to add user");
-      }
+      }, 7000);
     } catch (error) {
       console.error("Error adding user:", error);
     }
@@ -120,6 +118,19 @@ export default function AddUserModal() {
             />
             <FormField
               control={form.control}
+              name="phoneNumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phone Number(+251)</FormLabel>
+                  <FormControl>
+                    <Input placeholder="912617324" type="text" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="password"
               render={({ field }) => (
                 <FormItem>
@@ -131,7 +142,7 @@ export default function AddUserModal() {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full">
+            <Button disabled={isPending} type="submit" className="w-full">
               Add User
             </Button>
           </form>

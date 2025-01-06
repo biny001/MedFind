@@ -6,6 +6,7 @@ import getSession from "@/lib/getuserSession";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import sendMail from "@/lib/nodeMailer";
+import { phoneNumber } from "better-auth/plugins";
 
 export const GET = async function () {
   try {
@@ -65,6 +66,7 @@ export const POST = async (request: Request) => {
     const name = formData.get("name") as string;
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
+    const phoneNumber = formData.get("phoneNumber") as string;
     console.log(formData);
 
     const pharmacy = await prisma.pharmacy.findFirst({
@@ -77,7 +79,7 @@ export const POST = async (request: Request) => {
       throw new Error("Admin cannot register himself/herself");
 
     const newUser = await auth.api.signUpEmail({
-      body: { name, email, password, phoneNumber: "091111212323" },
+      body: { name, email, password, phoneNumber: phoneNumber },
     });
     if (!newUser) throw new Error("Unable to register new User");
     console.log(newUser);

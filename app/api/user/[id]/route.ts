@@ -12,17 +12,23 @@ export async function PUT(
   try {
     const userSession = await getSession();
 
-    if (!userSession || userSession.user.role !== "ADMIN") {
+    if (!userSession) {
       return new Response("Unauthorized", { status: 401 });
     }
 
     const pharmacy = await prisma.pharmacy.findFirst({
       where: {
-        adminId: userSession.session.id,
+        adminId: userSession.user.id,
       },
     });
 
-    if (!pharmacy) throw new Error("unable to get pharmacy");
+    console.log(pharmacy);
+
+    const isInArray = pharmacy?.admins.find((adminId) => adminId === id);
+
+    if (!isInArray) throw new Error("user does not exist");
+
+    if (!pharmacy) throw new Error("only owners are able to delete admins");
 
     const updatedPharmacy = await prisma.pharmacy.update({
       where: {
@@ -36,6 +42,14 @@ export async function PUT(
     });
 
     if (!updatedPharmacy) throw Error("unable to delete user");
+
+    const userDeleted = await prisma.user.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!userDeleted) throw Error("unable to delete user");
 
     return NextResponse.json("pharmacy deleted successfully", { status: 200 });
   } catch (error) {
