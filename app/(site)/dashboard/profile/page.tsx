@@ -8,6 +8,9 @@ import {
   HydrationBoundary,
 } from "@tanstack/react-query";
 import { getPharmacy } from "@/lib/queryiesandMutations/query";
+import getSession from "@/lib/getuserSession";
+import { redirect } from "next/navigation";
+import Approval from "@/components/Approval";
 
 const ProfilePage = async () => {
   // const queryClient = new QueryClient();
@@ -16,6 +19,7 @@ const ProfilePage = async () => {
   //   queryKey: ["pharmacy"],
   //   queryFn: getPharmacy,
   // });
+
   return (
     // <HydrationBoundary state={dehydrate(queryClient)}>
     // </HydrationBoundary>

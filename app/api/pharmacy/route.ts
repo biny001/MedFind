@@ -50,12 +50,14 @@ export const GET = async function (request: Request) {
       },
     });
 
+    console.log(pharmacy);
     if (!pharmacy) {
-      throw new Error("unable to get pharmacy details");
+      return new Response("Pharmacy not found", { status: 404 });
     }
 
     return NextResponse.json(pharmacy, { status: 200 });
   } catch (error) {
+    console.log(error);
     return new Response((error as Error).message, { status: 500 });
   }
 };

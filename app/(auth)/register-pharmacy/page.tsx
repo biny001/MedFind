@@ -14,7 +14,7 @@ const page = () => {
   if (!session) redirect("/login");
   if (session?.user?.pharmacyId) redirect("/");
 
-  console.log(session);
+  // console.log(session);
 
   return (
     <main

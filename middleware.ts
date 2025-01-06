@@ -1,7 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { betterFetch } from "@better-fetch/fetch";
-import type { Session } from "better-auth/types";
+import type { auth } from "@/lib/auth";
 import { NextResponse, type NextRequest } from "next/server";
+
+type Session = typeof auth.$Infer.Session;
 
 export default async function authMiddleware(request: NextRequest) {
   const { data: session } = await betterFetch<Session>(
@@ -15,12 +16,12 @@ export default async function authMiddleware(request: NextRequest) {
     }
   );
 
-  // if (!session) {
-  //   return NextResponse.redirect(new URL("/login", request.url));
-  // }
+  if (!session) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/"],
+  matcher: ["/dashboard/:path*", "/"],
 };

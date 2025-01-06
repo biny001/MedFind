@@ -16,6 +16,8 @@ const MedicineTableData = () => {
 
   if (error) return <div> Error getting data</div>;
 
+  if (data?.length === 0) return <div> Start adding medicines</div>;
+
   return (
     <div>
       <DataTable columns={columns} data={data || []} />

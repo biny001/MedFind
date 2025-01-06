@@ -1,18 +1,19 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { cn } from "@/lib/utils";
 import React from "react";
-// import { Medicine, medicines } from "./data/data";
-// import { columns } from "./_components/column";
-// import { DataTable } from "./_components/data-table";
+
 import { AddMedicineDetail } from "./_components/addMedicineDetail";
 
 import MedicineTableData from "./_components/MedicineTableData";
+import getSession from "@/lib/getuserSession";
 // import {
 //   QueryClient,
 //   dehydrate,
 //   HydrationBoundary,
 // } from "@tanstack/react-query";
 import { getMedicine } from "@/lib/queryiesandMutations/query";
+import { redirect } from "next/navigation";
+import Approval from "@/components/Approval";
 
 const MedicinePage = async () => {
   // const queryClient = new QueryClient();
@@ -21,6 +22,9 @@ const MedicinePage = async () => {
   //   queryKey: ["medicine"],
   //   queryFn: getMedicine,
   // });
+  const userSession = await getSession();
+
+  if (userSession?.user.approved !== "APPROVED") return <Approval />;
 
   return (
     <div className="mx-auto space-y-6 w-full overflow-auto">

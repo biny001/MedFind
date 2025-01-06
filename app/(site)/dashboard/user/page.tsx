@@ -9,6 +9,9 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import { getUser } from "@/lib/queryiesandMutations/query";
+import Approval from "@/components/Approval";
+import getSession from "@/lib/getuserSession";
+import { redirect } from "next/navigation";
 const UsersPage = async () => {
   // const queryClient = new QueryClient();
 
@@ -16,6 +19,9 @@ const UsersPage = async () => {
   //   queryKey: ["user"],
   //   queryFn: getUser,
   // });
+  const userSession = await getSession();
+
+  if (userSession?.user.approved !== "APPROVED") return <Approval />;
 
   return (
     <div className="container mx-auto py-10">

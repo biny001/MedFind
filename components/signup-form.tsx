@@ -73,6 +73,7 @@ export function SignUpForm({
           },
         },
         role: "USER",
+        callbackURL: "/register-pharmacy",
       });
     } catch (error) {
       console.error(error);
