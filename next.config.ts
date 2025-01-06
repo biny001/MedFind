@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
     // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
+  staticPageGenerationTimeout: 1200,
 };
 
 export default nextConfig;
