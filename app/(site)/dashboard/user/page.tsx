@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import UsersTable from "./_components/UsersTable";
 import AddUserModal from "./_components/AddUserModal";
-import { withApprovalProtection } from "@/components/withApprovalProtection";
+
 import {
   HydrationBoundary,
   dehydrate,
@@ -28,4 +28,4 @@ const UsersPage = async () => {
     </div>
   );
 };
-export default withApprovalProtection(UsersPage);
+export default UsersPage;

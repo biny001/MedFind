@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { PharmacyProfileForm } from "./_components/PharmacyProfileForm";
-import { withApprovalProtection } from "@/components/withApprovalProtection";
+
 import {
   QueryClient,
   dehydrate,
@@ -27,4 +27,4 @@ const ProfilePage = async () => {
   );
 };
 
-export default withApprovalProtection(ProfilePage);
+export default ProfilePage;

@@ -72,6 +72,7 @@ export function SignUpForm({
             router.push("/register-pharmacy");
           },
         },
+        role: "USER",
       });
     } catch (error) {
       console.error(error);

@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { cn } from "@/lib/utils";
 import React from "react";
-import { Medicine, medicines } from "./data/data";
-import { columns } from "./_components/column";
-import { DataTable } from "./_components/data-table";
+// import { Medicine, medicines } from "./data/data";
+// import { columns } from "./_components/column";
+// import { DataTable } from "./_components/data-table";
 import { AddMedicineDetail } from "./_components/addMedicineDetail";
-import { withApprovalProtection } from "@/components/withApprovalProtection";
+
 import MedicineTableData from "./_components/MedicineTableData";
 import {
   QueryClient,
@@ -37,4 +37,4 @@ const MedicinePage = async () => {
   );
 };
 
-export default withApprovalProtection(MedicinePage);
+export default MedicinePage;
