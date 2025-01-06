@@ -119,7 +119,7 @@ export const POST = async function (request: Request) {
       //   // Upload to Cloudinary
       const result = await cloudinary.uploader.upload(
         `data:image/png;base64,${imageBase64}`,
-        { folder: "myschool" }
+        { folder: "pharmacy" }
       );
 
       return result.secure_url;
@@ -134,6 +134,17 @@ export const POST = async function (request: Request) {
 
     // Create the medicine record
     console.log(medicineInfos);
+
+    const medicine = await prisma.medicine.findFirst({
+      where: {
+        pharmacyId: pharmacy.id,
+      },
+    });
+
+    if (medicine?.name === medicineInfos.name) {
+      throw new Error("medicine already exists in the database");
+    }
+
     const newMedicine = await prisma.medicine.create({
       data: {
         name: medicineInfos.name,

@@ -31,13 +31,14 @@ import {
   MAX_FILE_SIZE,
 } from "@/app/(auth)/register-pharmacy/_components/PharmacyRegistrationForm";
 import Image from "next/image";
+import { useCreateMedicine } from "@/lib/queryiesandMutations/mutations";
 
 const AddMedicineForm = ({
   setIsOpen,
 }: {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const [loading, setLoading] = useState(false);
+  const { mutate: createMedicine, isPending, isSuccess } = useCreateMedicine();
   const [imagePreview, setImagePreview] = React.useState<string | null>(null);
 
   const formSchema = z.object({
@@ -102,8 +103,6 @@ const AddMedicineForm = ({
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      setLoading(true);
-
       const formData = new FormData();
       formData.append("name", values.name);
       formData.append("category", values.category);
@@ -120,20 +119,10 @@ const AddMedicineForm = ({
       if (values.medicineImage) {
         formData.append("medicineImage", values.medicineImage);
       }
-
-      const res = await fetch("/api/medicine", {
-        method: "POST",
-        body: formData,
-      });
-      console.log(formData);
-      const data = await res.json();
+      createMedicine(formData);
     } catch (error) {
       console.log(error);
-    } finally {
-      setLoading(false);
     }
-
-    // setIsOpen(false);
   }
   return (
     <Form {...form}>
@@ -361,7 +350,9 @@ const AddMedicineForm = ({
             )}
           />
         </div>
-        <Button type="submit">Add Medicine</Button>
+        <Button disabled={isPending} type="submit">
+          Add Medicine
+        </Button>
       </form>
     </Form>
   );

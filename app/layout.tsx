@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-
+import Providers from "../lib/queryiesandMutations/provider";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 
@@ -21,7 +21,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`  ${poppins.className}   antialiased`}>{children}</body>
+      <Providers>
+        <body className={`  ${poppins.className}   antialiased`}>
+          {children}
+        </body>
+      </Providers>
     </html>
   );
 }

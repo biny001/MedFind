@@ -14,12 +14,6 @@ export function withApprovalProtection<P extends WithApprovalProtectionProps>(
   Component: NextPage<P>
 ): NextPage<P> {
   const ProtectedComponent: NextPage<P> = async (props) => {
-    const userSession = await getSession();
-
-    if (userSession?.user.approved !== "APPROVED") {
-      return <Approval />;
-    }
-
     return <Component {...props} />;
   };
 

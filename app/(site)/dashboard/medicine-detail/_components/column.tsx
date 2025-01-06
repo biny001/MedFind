@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
@@ -22,6 +23,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+
+import DialogBox from "./dialogBox";
 
 export const columns: ColumnDef<Medicine>[] = [
   {
@@ -130,52 +133,13 @@ export const columns: ColumnDef<Medicine>[] = [
     accessorKey: "doseUnit",
     header: "Dose Unit",
   },
+
   {
     id: "actions",
     cell: ({ row }) => {
       const medicine = row.original;
-      console.log(medicine);
 
-      return (
-        <Dialog>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(medicine.id)}
-              >
-                Copy medicine ID
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DialogTrigger asChild>
-                <DropdownMenuItem>Update</DropdownMenuItem>
-              </DialogTrigger>
-              <DropdownMenuItem
-                onClick={() => {
-                  // Handle delete action
-                  console.log("Delete medicine:", medicine.id);
-                }}
-              >
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Update Medicine</DialogTitle>
-            </DialogHeader>
-
-            <p>hi</p>
-          </DialogContent>
-        </Dialog>
-      );
+      return <DialogBox medicine={medicine} />;
     },
   },
-  ,
 ];
