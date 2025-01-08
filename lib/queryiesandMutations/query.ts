@@ -50,3 +50,19 @@ export const usePharmacy = () => {
     queryFn: getPharmacy,
   });
 };
+
+// pharmacy Details
+export async function getPharmacyDetail() {
+  const response = await fetch("/api/details");
+  if (!response.ok) {
+    throw new Error("Failed to fetch pharmacy detail");
+  }
+  return await response.json(); // Ensure the data is parsed as JSON
+}
+
+export const useGetPharmacyDetails = () => {
+  return useQuery({
+    queryKey: ["pharmacyDetail"],
+    queryFn: getPharmacyDetail,
+  });
+};

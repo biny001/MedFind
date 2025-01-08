@@ -6,6 +6,12 @@ import { nextCookies } from "better-auth/next-js";
 export const prisma = new PrismaClient();
 
 export const auth = betterAuth({
+  session: {
+    cookieCache: {
+      enabled: true,
+      maxAge: 120 * 60,
+    },
+  },
   user: {
     additionalFields: {
       phoneNumber: {
