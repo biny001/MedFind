@@ -23,13 +23,6 @@ export default async function authMiddleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [],
-  exclude: [
-    "/register",
-    "/login",
-    "/signup",
-    "/register-pharmacy",
-    "/dashboard/:path*",
-    "/",
-  ],
+  matcher: ["/dashboard/:path*", "/"],
+  exclude: ["/signup", "/login", "/register-pharmacy"],
 };
