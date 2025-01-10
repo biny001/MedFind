@@ -16,15 +16,15 @@ export async function DELETE(
 
     const pharmacy = await prisma.pharmacy.findFirst({
       where: {
-        adminId: userSession.session.id,
+        adminId: userSession.user.id,
       },
     });
 
-    if (!pharmacy) throw new Error("unable to get pharmacy");
+    if (!pharmacy) throw new Error("only owners are able to delete pharmacy");
 
-    const pharmacyDeleted = await prisma.pharmacy.delete({
+    await prisma.user.delete({
       where: {
-        id: pharmacy.id,
+        id: userSession.user.id,
       },
     });
 

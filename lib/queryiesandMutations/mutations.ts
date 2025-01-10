@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import SuccessToast from "@/components/successToast";
 import { Medicine } from "../../app/(site)/dashboard/medicine-detail/data/data";
 import { toast } from "react-toastify";
+import { authClient } from "../auth-client";
 
 export interface CreateMedicineInput {
   name: string;
@@ -140,6 +141,9 @@ export async function deletePharmacy(id: string) {
     const errorData = await response.json();
     throw new Error(errorData.message || "Failed to delete Pharmacy");
   }
+
+  await authClient.revokeSessions();
+  await authClient.signOut();
 }
 
 export const useDeletePharmacy = () => {
@@ -150,6 +154,7 @@ export const useDeletePharmacy = () => {
     onSuccess: () => {
       // Invalidate or update the cache to reflect the deletion
       queryClient.invalidateQueries({ queryKey: ["pharmacy"] }); // Replace "comments" with the query key for your medicines list
+      toast.success("Pharmacy Deleted Successfully");
     },
     onError: (error: any) => {
       console.error("Error deleting Pharamcy:", error);

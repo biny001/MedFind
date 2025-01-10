@@ -21,6 +21,7 @@ import Link from "next/link";
 import { loginSchema, LoginValues } from "@/lib/formSchema";
 import { authClient } from "@/lib/auth-client";
 import { useState } from "react";
+import { toast } from "react-toastify";
 export function LoginForm({
   className,
   ...props
@@ -45,7 +46,7 @@ export function LoginForm({
       });
 
       if (error) {
-        console.log(error.message);
+        toast.error(error.message);
       }
     } catch (error) {
       console.error(error);

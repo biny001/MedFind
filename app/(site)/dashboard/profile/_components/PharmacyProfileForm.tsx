@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -12,6 +12,8 @@ import { Label } from "@/components/ui/label";
 import { MapDialog } from "@/app/(auth)/register-pharmacy/_components/MapDialog";
 import { usePharmacy } from "@/lib/queryiesandMutations/query";
 import { useEditPharmacy } from "@/lib/queryiesandMutations/mutations";
+import { authClient } from "@/lib/auth-client";
+import { useDeletePharmacy } from "@/lib/queryiesandMutations/mutations";
 
 const pharmacySchema = z.object({
   name: z.string().min(2, "Pharmacy name must be at least 2 characters"),
@@ -25,6 +27,7 @@ type PharmacyFormData = z.infer<typeof pharmacySchema>;
 export function PharmacyProfileForm() {
   const { data: pharmacy, isLoading } = usePharmacy();
   const { mutate: editPharmacy, isPending } = useEditPharmacy();
+  const { mutate: deletePharmacy, isPending: isDeleting } = useDeletePharmacy();
 
   const {
     register,
@@ -57,6 +60,10 @@ export function PharmacyProfileForm() {
 
   const handleLocationSelect = (location: string) => {
     setValue("location", location);
+  };
+
+  const handleDelete = async () => {
+    deletePharmacy(pharmacy?.id);
   };
 
   return (
@@ -120,6 +127,14 @@ export function PharmacyProfileForm() {
             {isLoading || isPending ? "Updating..." : "Update Profile"}
           </Button>
         </form>
+        <Button
+          onClick={() => handleDelete()}
+          disabled={isDeleting}
+          className="w-full mt-5"
+          variant={"destructive"}
+        >
+          {isDeleting ? "isDeleting..." : "Delete Account"}
+        </Button>
       </CardContent>
     </Card>
   );
