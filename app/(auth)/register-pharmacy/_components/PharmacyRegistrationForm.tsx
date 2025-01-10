@@ -26,7 +26,8 @@ export const ACCEPTED_IMAGE_TYPES = [
 const pharmacySchema = z.object({
   name: z.string().min(2, "Pharmacy name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
-  phone: z.string().regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number"),
+  phone: z.string().regex(/^9\d{8}$/, "Invalid phone number"),
+
   location: z.string().min(1, "Location is required"),
   images: z
     .array(
@@ -207,8 +208,12 @@ export function PharmacyRegistrationForm({
               </div>
 
               <div>
-                <Label htmlFor="phone">Phone Number</Label>
-                <Input id="phone" {...register("phone")} />
+                <Label htmlFor="phone">Phone Number (+251)</Label>
+                <Input
+                  id="phone"
+                  {...register("phone")}
+                  placeholder="911427324"
+                />
                 {errors.phone && (
                   <p className="text-sm text-red-500 mt-1">
                     {errors.phone.message}

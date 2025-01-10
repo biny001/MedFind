@@ -7,6 +7,9 @@ const nextConfig: NextConfig = {
     // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
+  images: {
+    domains: ["res.cloudinary.com"], // Add Cloudinary domain here
+  },
   staticPageGenerationTimeout: 1200,
 };
 

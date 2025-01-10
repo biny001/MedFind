@@ -12,13 +12,27 @@ export const GET = async function (request: Request) {
       return new Response("Unauthorized", { status: 401 });
     }
 
-    const pharmacy = await prisma.pharmacy.findMany();
+    const pharmacies = await prisma.pharmacy.findMany({
+      include: {
+        admin: {
+          // Access the admin relationship
+          select: {
+            email: true,
+            name: true,
+            phoneNumber: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "desc", // Sort by newest first
+      },
+    });
 
-    if (!pharmacy) {
+    if (!pharmacies || pharmacies.length === 0) {
       return new Response(JSON.stringify({}), { status: 404 });
     }
 
-    return new Response(JSON.stringify(pharmacy), { status: 200 });
+    return new Response(JSON.stringify(pharmacies), { status: 200 });
   } catch (error) {
     console.error(error);
     return new Response((error as Error).message, { status: 500 });

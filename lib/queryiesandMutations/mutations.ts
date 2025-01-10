@@ -246,3 +246,33 @@ export const useCreateUser = () => {
     },
   });
 };
+
+// superAdmin
+
+export async function editPharmacyStatus(id: string): Promise<void> {
+  const response = await fetch(`/api/managePharmacy/${id}`, {
+    method: "PUT",
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Failed to modify pharmacy status");
+  }
+}
+
+export const useEditPharmacyStatus = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => editPharmacyStatus(id),
+    onSuccess: () => {
+      // Invalidate or refresh the medicines list
+      toast.success("pharmacy approved successfully");
+      queryClient.invalidateQueries({ queryKey: ["allUsers"] });
+    },
+    onError: (error: any) => {
+      toast.error(error);
+      console.error("Error approving pharmacy:", error);
+    },
+  });
+};

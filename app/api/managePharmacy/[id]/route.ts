@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { prisma } from "@/lib/auth";
+import { auth, prisma } from "@/lib/auth";
 import getSession from "@/lib/getuserSession";
 import sendMail from "@/lib/nodeMailer";
 
@@ -40,7 +40,7 @@ export async function PUT(
         await sendMail({
           to: user.email,
           subject: "Pharmacy Approval",
-          text: "Your pharmacy has been approved",
+          text: "Your pharmacy has been approved logg out from your current session and login again to see the changes",
         });
       }
     }

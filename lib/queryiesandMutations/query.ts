@@ -66,3 +66,20 @@ export const useGetPharmacyDetails = () => {
     queryFn: getPharmacyDetail,
   });
 };
+
+// superAdmin
+
+export async function getAllUsers() {
+  const response = await fetch("/api/managePharmacy");
+  if (!response.ok) {
+    throw new Error("Failed to fetch all users");
+  }
+  return await response.json(); // Ensure the data is parsed as JSON
+}
+
+export const useGetAllUsers = () => {
+  return useQuery({
+    queryKey: ["allUsers"],
+    queryFn: getAllUsers,
+  });
+};
